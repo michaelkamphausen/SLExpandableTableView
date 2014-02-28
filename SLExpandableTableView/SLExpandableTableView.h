@@ -17,9 +17,7 @@ typedef enum {
 
 @protocol UIExpandingTableViewCell <NSObject>
 
-@property (nonatomic, assign, getter = isLoading) BOOL loading;
-
-@property (nonatomic, readonly) UIExpansionStyle expansionStyle;
+- (void)setLoading:(BOOL)loading;
 - (void)setExpansionStyle:(UIExpansionStyle)style animated:(BOOL)animated;
 
 @end
