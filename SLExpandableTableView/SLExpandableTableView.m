@@ -218,9 +218,19 @@ static UITableViewRowAnimation SLExpandableTableViewReloadAnimation = UITableVie
 
     [self.animatingSectionsDictionary removeObjectForKey:@(section)];
 
-    [self scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:section]
-                atScrollPosition:UITableViewScrollPositionTop
-                        animated:animated];
+    
+    CGRect rectForSection = [self rectForSection:section];
+    CGFloat firstItemTop = rectForSection.origin.y;
+    CGFloat lastItemBottom = rectForSection.origin.y + rectForSection.size.height;
+    CGFloat height = self.bounds.size.height;
+    
+    if (lastItemBottom - self.contentOffset.y > height) {
+        if (lastItemBottom - firstItemTop > height) {
+            [self setContentOffset:CGPointMake(0., firstItemTop) animated:YES];
+        } else {
+            [self setContentOffset:CGPointMake(0., lastItemBottom - height) animated:YES];
+        }
+    }
 
     void(^completionBlock)(void) = ^{
         [self scrollViewDidScroll:self];
@@ -277,10 +287,6 @@ static UITableViewRowAnimation SLExpandableTableViewReloadAnimation = UITableVie
     }
 
     [self.animatingSectionsDictionary removeObjectForKey:@(section)];
-
-    [self scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:section]
-                atScrollPosition:UITableViewScrollPositionTop
-                        animated:animated];
 
     void(^completionBlock)(void) = ^{
         [self scrollViewDidScroll:self];
